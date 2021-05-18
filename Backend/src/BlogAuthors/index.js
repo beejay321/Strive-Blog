@@ -10,7 +10,7 @@ const authorsRouter = express.Router();
 
 const filePath = fileURLToPath(import.meta.url);
 const authorsFolderPath = dirname(filePath);
-const authorsJSONPath = join(authorsFolderPath, "authors.json");
+const authorsJSONPath = join(authorsFolderPath, "./authors.json");
 
 authorsRouter.get("/", (req, res) => {
   const contentAsBuffer = fs.readFileSync(authorsJSONPath);
@@ -18,6 +18,9 @@ authorsRouter.get("/", (req, res) => {
   const authors = JSON.parse(contentAsString);
   res.send(authors);
 });
+
+
+
 authorsRouter.get("/:id", (req, res) => {
   const contentAsBuffer = fs.readFileSync(authorsJSONPath);
   const contentAsString = contentAsBuffer.toString();
@@ -30,6 +33,8 @@ authorsRouter.get("/:id", (req, res) => {
   // res.send(authors);
 });
 
+
+
 authorsRouter.post("/", (req, res) => {
   const newAuthor = { ...req.body, createdAt: new Date(), _id: uniqid() };
 
@@ -39,10 +44,13 @@ authorsRouter.post("/", (req, res) => {
 
   authors.push(newAuthor);
 
-  fs.writeFileSync(studentJSONPath, JSON.stringify(authors));
+  fs.writeFileSync(authorsJSONPath, JSON.stringify(authors));
 
   res.status(201).send(newAuthor._id);
 });
+
+
+
 
 authorsRouter.put("/:id", (req, res) => {
   const authors = JSON.parse(fs.readFileSync(authorsJSONPath).toString());
