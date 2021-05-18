@@ -18,17 +18,56 @@ authorsRouter.get("/", (req, res) => {
   const authors = JSON.parse(contentAsString);
   res.send(authors);
 });
+authorsRouter.get("/:id", (req, res) => {
+  const contentAsBuffer = fs.readFileSync(authorsJSONPath);
+  const contentAsString = contentAsBuffer.toString();
+  const authors = JSON.parse(contentAsString);
+  console.log(req.params);
+
+  const author = authors.find((a) => a._id === req.params.id);
+
+  res.send(author);
+  // res.send(authors);
+});
+
 authorsRouter.post("/", (req, res) => {
-  const contentAsBuffer = fs.readFileSync(authorsJSONPath);
-  
+  const newAuthor = { ...req.body, createdAt: new Date(), _id: uniqid() };
+
+  console.log(newAuthor);
+
+  const authors = JSON.parse(fs.readFileSync(authorsJSONPath).toString());
+
+  authors.push(newAuthor);
+
+  fs.writeFileSync(studentJSONPath, JSON.stringify(authors));
+
+  res.status(201).send(newAuthor._id);
 });
-authorsRouter.put("/", (req, res) => {
-  const contentAsBuffer = fs.readFileSync(authorsJSONPath);
-  
+
+authorsRouter.put("/:id", (req, res) => {
+  const authors = JSON.parse(fs.readFileSync(authorsJSONPath).toString());
+
+  const remainingAuthors = authors.filter(
+    (author) => author._id !== req.params.id
+  );
+
+  const updatedAuthor = { ...req.body, _id: req.params.id };
+
+  remainingAuthors.push(updatedAuthor);
+
+  fs.writeFileSync(authorsJSONPath, JSON.stringify(remainingAuthors));
+
+  res.send(updatedAuthor);
 });
-authorsRouter.delete("/", (req, res) => {
-  const contentAsBuffer = fs.readFileSync(authorsJSONPath);
-  
+
+authorsRouter.delete("/:id", (req, res) => {
+  const authors = JSON.parse(fs.readFileSync(authorsJSONPath).toString());
+  const remainingAuthors = authors.filter(
+    (author) => author._id !== req.params.id
+  );
+  fs.writeFileSync(authorsJSONPath, JSON.stringify(remainingAuthors));
+
+  res.status(204).send();
 });
 
 export default authorsRouter;
