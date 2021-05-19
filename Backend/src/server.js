@@ -4,8 +4,8 @@ import listEndpoints from "express-list-endpoints";
 import authorsRoutes from "./BlogAuthors/index.js";
 import blogPostsRoutes from "./BlogPosts/index.js";
 import {
-  badRequestErrorHandler,
   notFoundErrorHandler,
+  badRequestErrorHandler,
   forbiddenErrorHandler,
   catchAllErrorHandler,
 } from "./errorHandlers.js";
@@ -21,8 +21,8 @@ server.use("/authors", authorsRoutes);
 
 server.use("/blogPosts", blogPostsRoutes);
 
-server.use(badRequestErrorHandler);
 server.use(notFoundErrorHandler);
+server.use(badRequestErrorHandler);
 server.use(forbiddenErrorHandler);
 server.use(catchAllErrorHandler);
 

@@ -7,14 +7,14 @@ import "./styles.css";
 export default class NewBlogPost extends Component {
   // constructor(props) {
   //   super(props);
-  //   this.state = { text: "" };
+  //   this.state = { content: "" };
   //   this.handleChange = this.handleChange.bind(this);
   // }
   state = {
     posts: {
       title: "",
       category: "",
-      text: "",
+      content: "",
     },
   };
 
@@ -36,7 +36,7 @@ export default class NewBlogPost extends Component {
           posts: {
             title: "",
             category: "",
-            text: "",
+            content: "",
           },
         });
       } else {
@@ -48,7 +48,7 @@ export default class NewBlogPost extends Component {
   };
 
   // handleChange(value) {
-  //   this.setState({ text: value });
+  //   this.setState({ content: value });
   // }
 
   handleChange = (e) => {
@@ -66,7 +66,7 @@ export default class NewBlogPost extends Component {
     return (
       <Container className="new-blog-container">
         <Form className="mt-5" onSubmit={this.submitPosts}>
-          <Form.Group controlId="blog-form" className="mt-3">
+          <Form.Group className="mt-3">
             <Form.Label>Title</Form.Label>
             <Form.Control
               id="title"
@@ -76,7 +76,7 @@ export default class NewBlogPost extends Component {
               placeholder="Title"
             />
           </Form.Group>
-          <Form.Group controlId="blog-category" className="mt-3">
+          <Form.Group className="mt-3">
             <Form.Label>Category</Form.Label>
             <Form.Control
               id="category"
@@ -92,14 +92,21 @@ export default class NewBlogPost extends Component {
               <option>Category5</option>
             </Form.Control>
           </Form.Group>
-          <Form.Group controlId="blog-content" className="mt-3">
+          <Form.Group className="mt-3">
             <Form.Label>Blog Content</Form.Label>
-            <ReactQuill
+            <Form.Control
+              as="textarea"
+              rows={15}
+              id="content"
+              value={this.state.content}
+              onChange={this.handleChange}
+            />
+            {/* <ReactQuill
               id="body"
-              value={this.state.text}
+              value={this.state.content}
               onChange={this.handleChange}
               className="new-blog-content"
-            />
+            /> */}
           </Form.Group>
           <Form.Group className="d-flex mt-3 justify-content-end">
             <Button type="reset" size="lg" variant="outline-dark">

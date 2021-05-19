@@ -61,5 +61,21 @@
         "content": "Heyy",
         "createdAt": "2021-05-19T14:34:02.291Z",
         "_id": "fb46bj0kovkfvec"
+    },
+    {
+        "category": "World Happenings",
+        "title": "The Pandemic",
+        "cover": "An Image",
+        "readTime": {
+            "value": 3,
+            "unit": "minute"
+        },
+        "author": {
+            "name": "Jonas Tim",
+            "avatar": "Another link"
+        },
+        "content": "Heyy",
+        "createdAt": "2021-05-19T15:23:53.634Z",
+        "_id": "fb462jskovm7zjj"
     }
 ]

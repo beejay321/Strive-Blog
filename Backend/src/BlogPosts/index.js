@@ -53,7 +53,7 @@ BlogPostsRouter.get("/:id", (req, res, next) => {
 
 /****************POST BLOGPOSTS******************/
 
-BlogPostsRouter.post("/", blogPostsValidation, (req, res) => {
+BlogPostsRouter.post("/", blogPostsValidation, (req, res, next) => {
   try {
     const errors = validationResult(req);
 
@@ -77,7 +77,7 @@ BlogPostsRouter.post("/", blogPostsValidation, (req, res) => {
   }
 });
 
-BlogPostsRouter.put("/:id", (req, res) => {
+BlogPostsRouter.put("/:id", (req, res, next) => {
   try {
     const blogPosts = getPosts();
     const remainingBlogPosts = blogPosts.filter(
@@ -96,7 +96,7 @@ BlogPostsRouter.put("/:id", (req, res) => {
   }
 });
 
-BlogPostsRouter.delete("/:id", (req, res) => {
+BlogPostsRouter.delete("/:id", (req, res, next) => {
   try {
     const blogPosts = getPosts();
     const remainingBlogPosts = blogPosts.filter(
