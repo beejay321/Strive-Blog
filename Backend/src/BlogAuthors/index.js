@@ -1,6 +1,6 @@
 import express from "express"; // third party module(needs to ne installed)
 import fs from "fs"; // core module (does not need to be installed)
-import path from "path";
+// import path from "path";
 import uniqid from "uniqid";
 import { fileURLToPath } from "url";
 import { dirname, join } from "path";
@@ -10,8 +10,8 @@ import { url } from "inspector";
 const authorsRouter = express.Router();
 
 const filePath = fileURLToPath(import.meta.url);
-const authorsFolderPath = dirname(filePath);
-const authorsJSONPath = join(authorsFolderPath, "authors.json");
+const __dirname = dirname(filePath);
+const authorsJSONPath = join(__dirname, "authors.json");
 console.log(url);
 
 authorsRouter.get("/", (req, res) => {

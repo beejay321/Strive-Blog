@@ -1,0 +1,34 @@
+[
+    {
+        "category": "World Happenings",
+        "title": "The Pandemic",
+        "cover": "An Image",
+        "readTime": {
+            "value": 1,
+            "unit": "minute"
+        },
+        "author": {
+            "name": "Jonas Tim",
+            "avatar": "Another link"
+        },
+        "content": "Heyy",
+        "createdAt": "2021-05-19T13:28:29.574Z",
+        "_id": "fb46ckokovi3kw8"
+    },
+    {
+        "category": "World Happenings",
+        "title": "The Pandemic",
+        "cover": "An Image",
+        "readTime": {
+            "value": 1,
+            "unit": "minute"
+        },
+        "author": {
+            "name": "Jonas Tim",
+            "avatar": "Another link"
+        },
+        "content": "Heyy",
+        "createdAt": "2021-05-19T13:54:52.389Z",
+        "_id": "fb46774kovj1i7a"
+    }
+]
