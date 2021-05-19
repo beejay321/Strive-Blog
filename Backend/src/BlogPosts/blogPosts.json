@@ -30,5 +30,36 @@
         "content": "Heyy",
         "createdAt": "2021-05-19T13:54:52.389Z",
         "_id": "fb46774kovj1i7a"
+    },
+    {
+        "category": "World Happenings",
+        "cover": "An Image",
+        "readTime": {
+            "value": 1,
+            "unit": "minute"
+        },
+        "author": {
+            "name": "Jonas Tim",
+            "avatar": "Another link"
+        },
+        "content": "Heyy",
+        "createdAt": "2021-05-19T14:31:54.004Z",
+        "_id": "fb46hsokovkd4et"
+    },
+    {
+        "category": "World Happenings",
+        "title": "The Pandemic",
+        "cover": "An Image",
+        "readTime": {
+            "value": 1,
+            "unit": "minute"
+        },
+        "author": {
+            "name": "Jonas Tim",
+            "avatar": "Another link"
+        },
+        "content": "Heyy",
+        "createdAt": "2021-05-19T14:34:02.291Z",
+        "_id": "fb46bj0kovkfvec"
     }
 ]

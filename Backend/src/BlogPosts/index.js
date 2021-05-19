@@ -4,11 +4,8 @@ import uniqid from "uniqid";
 import { fileURLToPath } from "url";
 import { dirname, join } from "path";
 import { validationResult } from "express-validator";
-import createError from "http-errors"
-import { blogPostsValidation } from "./validation.js"
-
-
-
+import createError from "http-errors";
+import { blogPostsValidation } from "./validation.js";
 
 const BlogPostsRouter = express.Router();
 
@@ -44,7 +41,11 @@ BlogPostsRouter.get("/:id", (req, res, next) => {
     const blogPosts = getPosts();
     console.log(req.params);
     const blogPost = blogPosts.find((a) => a._id === req.params.id);
-    res.send(blogPost);
+    if (blogPost) {
+      res.send(blogPost);
+    } else {
+      next(createError(404, `Post ${req.params.id} not found `));
+    }
   } catch (error) {
     next(error);
   }
@@ -52,19 +53,25 @@ BlogPostsRouter.get("/:id", (req, res, next) => {
 
 /****************POST BLOGPOSTS******************/
 
-BlogPostsRouter.post("/", (req, res) => {
+BlogPostsRouter.post("/", blogPostsValidation, (req, res) => {
   try {
-    console.log(req.body);
+    const errors = validationResult(req);
 
-    const newBlogPost = { ...req.body, createdAt: new Date(), _id: uniqid() };
-    console.log(newBlogPost);
+    if (!errors.isEmpty()) {
+      next(createError(400, { errorList: errors }));
+    } else {
+      console.log(req.body);
 
-    const blogPosts = getPosts();
-    blogPosts.push(newBlogPost);
-    console.log(blogPosts);
+      const newBlogPost = { ...req.body, createdAt: new Date(), _id: uniqid() };
+      console.log(newBlogPost);
 
-    writePosts(blogPosts);
-    res.status(201).send(newBlogPost._id);
+      const blogPosts = getPosts();
+      blogPosts.push(newBlogPost);
+      console.log(blogPosts);
+
+      writePosts(blogPosts);
+      res.status(201).send(newBlogPost._id);
+    }
   } catch (error) {
     next(error);
   }
