@@ -13,13 +13,13 @@ const filePath = fileURLToPath(import.meta.url);
 const __dirname = dirname(filePath);
 const blogPostsJSONPath = join(__dirname, "blogPosts.json");
 
-const getPosts = () => {
+const readFile = () => {
   const content = fs.readFileSync(blogPostsJSONPath);
   console.log(content);
   const blogPosts = JSON.parse(content);
   return blogPosts;
 };
-const writePosts = (blogPosts) => {
+const writeFile = (blogPosts) => {
   fs.writeFileSync(blogPostsJSONPath, JSON.stringify(blogPosts));
 };
 
@@ -27,7 +27,7 @@ const writePosts = (blogPosts) => {
 
 BlogPostsRouter.get("/", (req, res, next) => {
   try {
-    const blogPosts = getPosts();
+    const blogPosts = readFile();
     res.send(blogPosts);
   } catch (error) {
     next(error);
@@ -38,13 +38,14 @@ BlogPostsRouter.get("/", (req, res, next) => {
 
 BlogPostsRouter.get("/:id", (req, res, next) => {
   try {
-    const blogPosts = getPosts();
+    const blogPosts = readFile();
     console.log(req.params);
     const blogPost = blogPosts.find((a) => a._id === req.params.id);
     if (blogPost) {
       res.send(blogPost);
     } else {
       next(createError(404, `Post ${req.params.id} not found `));
+      // createError(err.status, error.message)
     }
   } catch (error) {
     next(error);
@@ -65,11 +66,11 @@ BlogPostsRouter.post("/", blogPostsValidation, (req, res, next) => {
       const newBlogPost = { ...req.body, createdAt: new Date(), _id: uniqid() };
       console.log(newBlogPost);
 
-      const blogPosts = getPosts();
+      const blogPosts = readFile();
       blogPosts.push(newBlogPost);
       console.log(blogPosts);
 
-      writePosts(blogPosts);
+      writeFile(blogPosts);
       res.status(201).send(newBlogPost._id);
     }
   } catch (error) {
@@ -79,7 +80,7 @@ BlogPostsRouter.post("/", blogPostsValidation, (req, res, next) => {
 
 BlogPostsRouter.put("/:id", (req, res, next) => {
   try {
-    const blogPosts = getPosts();
+    const blogPosts = readFile();
     const remainingBlogPosts = blogPosts.filter(
       (blogPost) => blogPost._id !== req.params.id
     );
@@ -88,7 +89,7 @@ BlogPostsRouter.put("/:id", (req, res, next) => {
 
     remainingBlogPosts.push(updatedBlogPost);
 
-    writePosts(remainingBlogPosts);
+    writeFile(remainingBlogPosts);
 
     res.send(updatedBlogPost);
   } catch (error) {
@@ -98,12 +99,12 @@ BlogPostsRouter.put("/:id", (req, res, next) => {
 
 BlogPostsRouter.delete("/:id", (req, res, next) => {
   try {
-    const blogPosts = getPosts();
+    const blogPosts = readFile();
     const remainingBlogPosts = blogPosts.filter(
       (blogPost) => blogPost._id !== req.params.id
     );
 
-    writePosts(remainingBlogPosts);
+    writeFile(remainingBlogPosts);
     res.status(204).send();
   } catch (error) {
     next(error);
