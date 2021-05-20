@@ -7,13 +7,18 @@ import "./styles.css";
 export default class NewBlogPost extends Component {
   // constructor(props) {
   //   super(props);
-  //   this.state = { content: "" };
+  //   this.state = { text: "" };
   //   this.handleChange = this.handleChange.bind(this);
   // }
   state = {
     posts: {
       title: "",
       category: "",
+      cover: "",
+      readTime: {
+        value: 1,
+        unit: "",
+      },
       content: "",
     },
   };
@@ -36,6 +41,11 @@ export default class NewBlogPost extends Component {
           posts: {
             title: "",
             category: "",
+            cover: "",
+            readTime: {
+              value: 1,
+              unit: "",
+            },
             content: "",
           },
         });
@@ -47,13 +57,8 @@ export default class NewBlogPost extends Component {
     }
   };
 
-  // handleChange(value) {
-  //   this.setState({ content: value });
-  // }
-
   handleChange = (e) => {
     let id = e.target.id;
-
     this.setState({
       posts: {
         ...this.state.posts,
@@ -70,17 +75,54 @@ export default class NewBlogPost extends Component {
             <Form.Label>Title</Form.Label>
             <Form.Control
               id="title"
-              value={this.state.title}
+              value={this.state.posts.title}
               onChange={this.handleChange}
               size="lg"
               placeholder="Title"
             />
           </Form.Group>
           <Form.Group className="mt-3">
+            <Form.Label>Cover</Form.Label>
+            <Form.Control
+              id="cover"
+              value={this.state.posts.cover}
+              onChange={this.handleChange}
+              size="lg"
+              placeholder="Cover"
+            />
+          </Form.Group>
+
+          <Form.Group className="mt-3">
+            <Form.Label>Value</Form.Label>
+            <Form.Control
+              id="value"
+              // value={this.state.posts.readTime.value}
+              onChange={this.handleChange}
+              size="lg"
+              as="select"
+            >
+              <option>1</option>
+              <option>2</option>
+              <option>3</option>
+              <option>4</option>
+              <option>5</option>
+            </Form.Control>
+          </Form.Group>
+
+          <Form.Group className="mt-3">
+            <Form.Label>Unit</Form.Label>
+            <Form.Control
+              id="unit"
+              // value={this.state.posts.readTime.unit}
+              onChange={this.handleChange}
+              size="lg"
+            />
+          </Form.Group>
+          <Form.Group className="mt-3">
             <Form.Label>Category</Form.Label>
             <Form.Control
               id="category"
-              value={this.state.category}
+              value={this.state.posts.category}
               onChange={this.handleChange}
               size="lg"
               as="select"
@@ -98,14 +140,14 @@ export default class NewBlogPost extends Component {
               as="textarea"
               rows={15}
               id="content"
-              value={this.state.content}
+              value={this.state.posts.content}
               onChange={this.handleChange}
             />
             {/* <ReactQuill
               id="body"
-              value={this.state.content}
+              value={this.state.text}
               onChange={this.handleChange}
-              className="new-blog-content"
+              className="new-blog-text"
             /> */}
           </Form.Group>
           <Form.Group className="d-flex mt-3 justify-content-end">

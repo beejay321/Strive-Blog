@@ -77,5 +77,31 @@
         "content": "Heyy",
         "createdAt": "2021-05-19T15:23:53.634Z",
         "_id": "fb462jskovm7zjj"
+    },
+    {
+        "title": "",
+        "category": "Category3",
+        "cover": "",
+        "readTime": {
+            "value": 1,
+            "unit": ""
+        },
+        "content": "a text",
+        "unit": "minutes",
+        "createdAt": "2021-05-20T03:56:02.135Z",
+        "_id": "fb46e7skowd38wo"
+    },
+    {
+        "title": "The pandemic",
+        "category": "Category4",
+        "cover": "cover",
+        "readTime": {
+            "value": 1,
+            "unit": ""
+        },
+        "content": "another content",
+        "value": "3",
+        "createdAt": "2021-05-20T03:58:00.659Z",
+        "_id": "fb46e7skowd5scz"
     }
 ]
