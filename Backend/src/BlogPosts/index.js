@@ -7,6 +7,8 @@ import { validationResult } from "express-validator";
 import createError from "http-errors";
 import { blogPostsValidation } from "./validation.js";
 import { getPosts, writePosts } from "../lib/fs-tools.js";
+import { writePostCover, readPostCover } from "../lib/fs-tools.js"
+import multer from "multer"
 
 const BlogPostsRouter = express.Router();
 
@@ -101,6 +103,28 @@ BlogPostsRouter.post("/", blogPostsValidation, async (req, res, next) => {
     next(error);
   }
 });
+
+
+/****************UPLOAD COVER******************/
+BlogPostsRouter.post("/:id/uploadCover", multer().single("cover"), async (req, res, next) => {
+  try {
+
+    const blogPosts = await getPosts();
+    const blogPost = blogPosts.find((a) => a._id === req.params.id);
+
+
+    console.log(req.file)
+    await writePostCover(req.file.originalname, req.file.buffer)
+    res.send("ok")
+  } catch (error) {
+    console.log(error)
+    next(error)
+  }
+})
+
+
+
+
 /****************POST BLOGPOSTS COMMENTS******************/
 
 BlogPostsRouter.post("/:id/", async (req, res, next) => {

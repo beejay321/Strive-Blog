@@ -14,7 +14,7 @@ export default class NewBlogPost extends Component {
     posts: {
       title: "",
       category: "",
-      cover: "",
+      cover: undefined,
       readTime: {
         value: 1,
         unit: "",
@@ -36,21 +36,25 @@ export default class NewBlogPost extends Component {
       });
 
       if (response.ok) {
-        alert("your post has been saved correctly");
-        this.setState({
-          posts: {
-            title: "",
-            category: "",
-            cover: "",
-            readTime: {
-              value: 1,
-              unit: "",
-            },
-            content: "",
-          },
-        });
-      } else {
-        alert("something went wrong");
+        if (this.state.cover !== undefined) {
+          const data = await response.json();
+          const id = data._id;
+          let aResponse = await fetch(
+            "http://localhost:3001/blogPosts/" + id,
+            {
+              method: "POST",
+              headers: {
+                "Content-Type": "multipart/form-data",
+              },
+              body: this.state.cover,
+            }
+          );
+          if (aResponse.ok) {
+            console.log("File uploaded successfully");
+          }
+        } else {
+          console.log("File was not uploaded!");
+        }
       }
     } catch (error) {
       console.log(error);
