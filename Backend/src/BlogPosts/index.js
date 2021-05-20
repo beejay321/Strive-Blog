@@ -6,28 +6,30 @@ import { dirname, join } from "path";
 import { validationResult } from "express-validator";
 import createError from "http-errors";
 import { blogPostsValidation } from "./validation.js";
+import { getPosts, writePosts } from "../lib/fs-tools.js";
 
 const BlogPostsRouter = express.Router();
 
-const filePath = fileURLToPath(import.meta.url);
-const __dirname = dirname(filePath);
-const blogPostsJSONPath = join(__dirname, "blogPosts.json");
+// const filePath = fileURLToPath(import.meta.url);
+// const __dirname = dirname(filePath);
+// const blogPostsJSONPath = join(__dirname, "../data/blogPosts.json");
 
-const readFile = () => {
-  const content = fs.readFileSync(blogPostsJSONPath);
-  console.log(content);
-  const blogPosts = JSON.parse(content);
-  return blogPosts;
-};
-const writeFile = (blogPosts) => {
-  fs.writeFileSync(blogPostsJSONPath, JSON.stringify(blogPosts));
-};
+// const getPosts = () => {
+//   const content = fs.readFileSync(blogPostsJSONPath);
+//   console.log(content);
+//   const blogPosts = JSON.parse(content);
+//   return blogPosts;
+// };
+// const writePosts = (blogPosts) => {
+//   fs.writeFileSync(blogPostsJSONPath, JSON.stringify(blogPosts));
+// };
 
 /****************GET POSTS******************/
 
-BlogPostsRouter.get("/", (req, res, next) => {
+BlogPostsRouter.get("/", async (req, res, next) => {
   try {
-    const blogPosts = readFile();
+    const blogPosts = await getPosts();
+    console.log(blogPosts);
     res.send(blogPosts);
   } catch (error) {
     next(error);
@@ -36,9 +38,9 @@ BlogPostsRouter.get("/", (req, res, next) => {
 
 /****************GET SINGLE POST******************/
 
-BlogPostsRouter.get("/:id", (req, res, next) => {
+BlogPostsRouter.get("/:id", async (req, res, next) => {
   try {
-    const blogPosts = readFile();
+    const blogPosts = await getPosts();
     console.log(req.params);
     const blogPost = blogPosts.find((a) => a._id === req.params.id);
     if (blogPost) {
@@ -51,10 +53,32 @@ BlogPostsRouter.get("/:id", (req, res, next) => {
     next(error);
   }
 });
+/****************GET COMMENTS ON POST******************/
+
+BlogPostsRouter.get("/:id/comments", async (req, res, next) => {
+  try {
+    const blogPosts = await getPosts();
+    console.log(req.params);
+    const blogPost = blogPosts.find((a) => a._id === req.params.id);
+    if (blogPost) {
+      console.log(blogPost.comments);
+      if (blogPost.comments) {
+        res.send(blogPost.comments);
+      } else {
+        next(createError(404, `No Comments found`));
+      }
+    } else {
+      next(createError(404, `Post ${req.params.id} not found `));
+      // createError(err.status, error.message)
+    }
+  } catch (error) {
+    next(error);
+  }
+});
 
 /****************POST BLOGPOSTS******************/
 
-BlogPostsRouter.post("/", blogPostsValidation, (req, res, next) => {
+BlogPostsRouter.post("/", blogPostsValidation, async (req, res, next) => {
   try {
     const errors = validationResult(req);
 
@@ -64,23 +88,48 @@ BlogPostsRouter.post("/", blogPostsValidation, (req, res, next) => {
       console.log(req.body);
 
       const newBlogPost = { ...req.body, createdAt: new Date(), _id: uniqid() };
-      console.log(newBlogPost);
+      // console.log(newBlogPost);
 
-      const blogPosts = readFile();
+      const blogPosts = await getPosts();
       blogPosts.push(newBlogPost);
-      console.log(blogPosts);
+      // console.log(blogPosts);
 
-      writeFile(blogPosts);
+      writePosts(blogPosts);
       res.status(201).send(newBlogPost._id);
     }
   } catch (error) {
     next(error);
   }
 });
+/****************POST BLOGPOSTS COMMENTS******************/
 
-BlogPostsRouter.put("/:id", (req, res, next) => {
+BlogPostsRouter.post("/:id/", async (req, res, next) => {
   try {
-    const blogPosts = readFile();
+    console.log(req.body);
+
+    const newComment = {
+      ...req.body,
+      createdAt: new Date(),
+      _id: uniqid(),
+    };
+    console.log(newComment);
+
+    const blogPosts = await getPosts();
+    const blogPost = blogPosts.find((a) => a._id === req.params.id);
+
+    console.log(blogPost.comments);
+    blogPost.comments.push(newComment);
+    writePosts(blogPosts);
+    console.log(blogPost);
+    res.status(201).send(newComment._id);
+  } catch (error) {
+    next(error);
+  }
+});
+
+BlogPostsRouter.put("/:id", async (req, res, next) => {
+  try {
+    const blogPosts = await getPosts();
     const remainingBlogPosts = blogPosts.filter(
       (blogPost) => blogPost._id !== req.params.id
     );
@@ -89,7 +138,7 @@ BlogPostsRouter.put("/:id", (req, res, next) => {
 
     remainingBlogPosts.push(updatedBlogPost);
 
-    writeFile(remainingBlogPosts);
+    writePosts(remainingBlogPosts);
 
     res.send(updatedBlogPost);
   } catch (error) {
@@ -97,14 +146,14 @@ BlogPostsRouter.put("/:id", (req, res, next) => {
   }
 });
 
-BlogPostsRouter.delete("/:id", (req, res, next) => {
+BlogPostsRouter.delete("/:id", async (req, res, next) => {
   try {
-    const blogPosts = readFile();
+    const blogPosts = await getPosts();
     const remainingBlogPosts = blogPosts.filter(
       (blogPost) => blogPost._id !== req.params.id
     );
 
-    writeFile(remainingBlogPosts);
+    writePosts(remainingBlogPosts);
     res.status(204).send();
   } catch (error) {
     next(error);

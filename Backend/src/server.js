@@ -26,7 +26,7 @@ server.use(badRequestErrorHandler);
 server.use(forbiddenErrorHandler);
 server.use(catchAllErrorHandler);
 
-console.log(listEndpoints(server));
+// console.log(listEndpoints(server));
 console.table(listEndpoints(server));
 
 server.listen(port, () => {

@@ -1,4 +1,5 @@
 export const notFoundErrorHandler = (err, req, res, next) => {
+  console.log(err)
     if (err.status === 404) {
       res.status(404).send(err.message || "Error not found!")
     } else {

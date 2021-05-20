@@ -1,0 +1,199 @@
+[
+    {
+        "category": "World Happenings",
+        "title": "The Pandemic",
+        "cover": "An Image",
+        "readTime": {
+            "value": 1,
+            "unit": "minute"
+        },
+        "author": {
+            "name": "Jonas Tim",
+            "avatar": "Another link"
+        },
+        "content": "Heyy",
+        "createdAt": "2021-05-19T13:28:29.574Z",
+        "_id": "fb46ckokovi3kw8",
+        "comments": [
+            {
+                "name": "",
+                "text": ""
+            }
+        ]
+    },
+    {
+        "category": "World Happenings",
+        "title": "The Pandemic",
+        "cover": "An Image",
+        "readTime": {
+            "value": 1,
+            "unit": "minute"
+        },
+        "author": {
+            "name": "Jonas Tim",
+            "avatar": "Another link"
+        },
+        "content": "Heyy",
+        "createdAt": "2021-05-19T13:54:52.389Z",
+        "_id": "fb46774kovj1i7a",
+        "comments": [
+            {
+                "name": "Mark",
+                "text": "what a nice article ",
+                "createdAt": "2021-05-20T14:30:22.917Z",
+                "_id": "fb466m4kowzr0sm"
+            }
+        ]
+    },
+    {
+        "category": "World Happenings",
+        "cover": "An Image",
+        "readTime": {
+            "value": 1,
+            "unit": "minute"
+        },
+        "author": {
+            "name": "Jonas Tim",
+            "avatar": "Another link"
+        },
+        "content": "Heyy",
+        "createdAt": "2021-05-19T14:31:54.004Z",
+        "_id": "fb46hsokovkd4et",
+        "comments": [
+            {
+                "name": "Mark",
+                "text": "what a nice article ",
+                "createdAt": "2021-05-20T14:31:15.821Z",
+                "_id": "fb466m4kowzs5m5"
+            }
+        ]
+    },
+    {
+        "category": "World Happenings",
+        "title": "The Pandemic",
+        "cover": "An Image",
+        "readTime": {
+            "value": 1,
+            "unit": "minute"
+        },
+        "author": {
+            "name": "Jonas Tim",
+            "avatar": "Another link"
+        },
+        "content": "Heyy",
+        "createdAt": "2021-05-19T14:34:02.291Z",
+        "_id": "fb46bj0kovkfvec",
+        "comments": []
+    },
+    {
+        "category": "World Happenings",
+        "title": "The Pandemic",
+        "cover": "An Image",
+        "readTime": {
+            "value": 3,
+            "unit": "minute"
+        },
+        "author": {
+            "name": "Jonas Tim",
+            "avatar": "Another link"
+        },
+        "content": "Heyy",
+        "createdAt": "2021-05-19T15:23:53.634Z",
+        "_id": "fb462jskovm7zjj",
+        "comments": []
+    },
+    {
+        "title": "",
+        "category": "Category3",
+        "cover": "",
+        "readTime": {
+            "value": 1,
+            "unit": ""
+        },
+        "content": "a text",
+        "unit": "minutes",
+        "createdAt": "2021-05-20T03:56:02.135Z",
+        "_id": "fb46e7skowd38wo",
+        "comments": []
+    },
+    {
+        "title": "The pandemic",
+        "category": "Category4",
+        "cover": "cover",
+        "readTime": {
+            "value": 1,
+            "unit": ""
+        },
+        "content": "another content",
+        "value": "3",
+        "createdAt": "2021-05-20T03:58:00.659Z",
+        "_id": "fb46e7skowd5scz",
+        "comments": []
+    },
+    {
+        "category": "World Happenings",
+        "title": "The Pandemic",
+        "cover": "An Image",
+        "readTime": {
+            "value": 3,
+            "unit": "minute"
+        },
+        "author": {
+            "name": "Jonas Tim",
+            "avatar": "Another link"
+        },
+        "content": "Heyy",
+        "comments": [
+            {
+                "name": "",
+                "text": ""
+            }
+        ],
+        "createdAt": "2021-05-20T13:59:17.298Z",
+        "_id": "fb463p8kowyn19v"
+    },
+    {
+        "category": "World Happenings",
+        "title": "The Pandemic",
+        "cover": "An Image",
+        "readTime": {
+            "value": 3,
+            "unit": "minute"
+        },
+        "author": {
+            "name": "Jonas Tim",
+            "avatar": "Another link"
+        },
+        "content": "Heyy",
+        "comments": [
+            {
+                "name": "",
+                "text": ""
+            }
+        ],
+        "createdAt": "2021-05-20T14:00:16.002Z",
+        "_id": "fb46faokowyoakj"
+    },
+    {
+        "category": "World Happenings",
+        "title": "The Pandemic",
+        "cover": "An Image",
+        "readTime": {
+            "value": 3,
+            "unit": "minute"
+        },
+        "author": {
+            "name": "Jonas Tim",
+            "avatar": "Another link"
+        },
+        "content": "Heyy",
+        "comments": [
+            {
+                "name": "",
+                "text": ""
+            }
+        ],
+        "createdAt": "2021-05-20T14:02:44.175Z",
+        "_id": "fb46dlokowyrgwg"
+    }
+]
