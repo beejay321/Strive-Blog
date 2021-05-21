@@ -39,16 +39,13 @@ export default class NewBlogPost extends Component {
         if (this.state.cover !== undefined) {
           const data = await response.json();
           const id = data._id;
-          let aResponse = await fetch(
-            "http://localhost:3001/blogPosts/" + id,
-            {
-              method: "POST",
-              headers: {
-                "Content-Type": "multipart/form-data",
-              },
-              body: this.state.cover,
-            }
-          );
+          let aResponse = await fetch("http://localhost:3001/blogPosts/" + id, {
+            method: "POST",
+            headers: {
+              "Content-Type": "multipart/form-data",
+            },
+            body: this.state.cover,
+          });
           if (aResponse.ok) {
             console.log("File uploaded successfully");
           }
@@ -71,6 +68,19 @@ export default class NewBlogPost extends Component {
     });
   };
 
+  selectImage = (e) => {
+    e.preventDefault();
+    console.log(e.target.files[0]);
+    const file = e.target.files[0];
+    let formData = new FormData();
+    formData.append("cover", file);
+    console.log(this.state.cover);
+    console.log(formData);
+    this.setState({
+      cover: formData,
+    });
+  };
+
   render() {
     return (
       <Container className="new-blog-container">
@@ -83,18 +93,34 @@ export default class NewBlogPost extends Component {
               onChange={this.handleChange}
               size="lg"
               placeholder="Title"
+              type="text"
             />
           </Form.Group>
-          <Form.Group className="mt-3">
-            <Form.Label>Cover</Form.Label>
-            <Form.Control
+          <br />
+
+          <Form.Group>
+            <Form.Label>Upload Cover</Form.Label>
+            <Form.File
               id="cover"
-              value={this.state.posts.cover}
-              onChange={this.handleChange}
-              size="lg"
-              placeholder="Cover"
+              type="file"
+              name="cover"
+              onChange={this.selectImage}
             />
           </Form.Group>
+
+          <br />
+          {/* <Button>
+            <div>
+              <form enctype="multipart/form-data" method="post" name="fileinfo">
+                <input
+                  id="cover"
+                  type="file"
+                  name="cover"
+                  onChange={this.selectImage}
+                />
+              </form>
+            </div>
+          </Button> */}
 
           <Form.Group className="mt-3">
             <Form.Label>Value</Form.Label>
@@ -120,6 +146,7 @@ export default class NewBlogPost extends Component {
               // value={this.state.posts.readTime.unit}
               onChange={this.handleChange}
               size="lg"
+              type="text"
             />
           </Form.Group>
           <Form.Group className="mt-3">

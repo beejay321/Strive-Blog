@@ -127,7 +127,7 @@ BlogPostsRouter.post("/:id/uploadCover", multer().single("cover"), async (req, r
 
 /****************POST BLOGPOSTS COMMENTS******************/
 
-BlogPostsRouter.post("/:id/", async (req, res, next) => {
+BlogPostsRouter.post("/:id/comments", async (req, res, next) => {
   try {
     console.log(req.body);
 
