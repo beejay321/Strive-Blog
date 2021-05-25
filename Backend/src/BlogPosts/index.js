@@ -7,8 +7,8 @@ import { validationResult } from "express-validator";
 import createError from "http-errors";
 import { blogPostsValidation } from "./validation.js";
 import { getPosts, writePosts } from "../lib/fs-tools.js";
-import { writePostCover, readPostCover } from "../lib/fs-tools.js"
-import multer from "multer"
+import { writePostCover, readPostCover } from "../lib/fs-tools.js";
+import multer from "multer";
 
 const BlogPostsRouter = express.Router();
 
@@ -96,7 +96,7 @@ BlogPostsRouter.post("/", blogPostsValidation, async (req, res, next) => {
       blogPosts.push(newBlogPost);
       // console.log(blogPosts);
 
-      writePosts(blogPosts);
+      await writePosts(blogPosts);
       res.status(201).send(newBlogPost._id);
     }
   } catch (error) {
@@ -104,26 +104,41 @@ BlogPostsRouter.post("/", blogPostsValidation, async (req, res, next) => {
   }
 });
 
-
 /****************UPLOAD COVER******************/
-BlogPostsRouter.post("/:id/uploadCover", multer().single("cover"), async (req, res, next) => {
-  try {
+BlogPostsRouter.post(
+  "/:id/uploadCover",
+  multer().single("cover"),
+  async (req, res, next) => {
+    try {
+      console.log(req.file);
+      // await writePostCover(req.file.originalname, req.file.buffer);
+      console.log()
+      const fileName = `${req.file.originalname}`;
+      const link = `http://localhost:3001/img/cover/${fileName}`;
+      // imageFile = link;
+      // res.send("ok");
 
-    const blogPosts = await getPosts();
-    const blogPost = blogPosts.find((a) => a._id === req.params.id);
+      console.log(req.body);
 
+      const newBlogPost = {
+        ...req.body,
+        cover: link,
+        createdAt: new Date(),
+        _id: uniqid(),
+      };
+      // console.log(newBlogPost);
 
-    console.log(req.file)
-    await writePostCover(req.file.originalname, req.file.buffer)
-    res.send("ok")
-  } catch (error) {
-    console.log(error)
-    next(error)
+      const blogPosts = await getPosts();
+      blogPosts.push(newBlogPost);
+      // console.log(blogPosts);
+
+      await writePosts(blogPosts);
+      res.status(201).send(newBlogPost);
+    } catch (error) {
+      next(error);
+    }
   }
-})
-
-
-
+);
 
 /****************POST BLOGPOSTS COMMENTS******************/
 
@@ -183,5 +198,64 @@ BlogPostsRouter.delete("/:id", async (req, res, next) => {
     next(error);
   }
 });
+
+
+filesRouter.post(
+  "/:id/upload",
+  multer().single("img"),
+  async (req, res, next) => {
+    try {
+      console.log(req.file);
+      await writeImage(req.file.originalname, req.file.buffer);
+      console.log(imagePath);
+      console.log(publicFolderPath);
+      //   const link = `http://localhost:3001/img/${req.file.originalname}`;
+      //   res.send(req.file.originalname);
+
+    //   const Products = await getProducts();
+    //   console.log(Products);
+
+      //   const updatedProducts = Products.map((product) => {
+      //     if (req.params.id === product._id) {
+      //       product.imageUrl === req.file.originalname;
+      //     }
+      //     console.log(product);
+      //   });
+      //   await writeProducts(updatedProducts);
+      res.send("ok");
+    } catch (error) {
+      next(error);
+    }
+  }
+);
+
+const remainingProducts = Products.filter((p) => p._id !== req.params.id);
+
+      const updatedProduct = { ...req.body, _id: req.params.id };
+
+      remainingProducts.push(updatedProduct);
+
+      writeProducts(remainingProducts);
+
+      res.send(updatedProduct);
+
+      const newProduct = {
+        ...req.body,
+        img: link,
+        createdAt: new Date(),
+        // _id: uniqid(),
+      };
+      console.log(newProduct);
+
+      const Products = await getProducts();
+      Products.push(newProduct);
+      console.log(Products);
+
+      await writeProducts(Products);
+      res.status(201).send(newProduct);
+
+
+
+
 
 export default BlogPostsRouter;

@@ -20,8 +20,7 @@ export const writeAuthors = async (content) =>
 export const writePosts = async (content) =>
   await writeJSON(join(dataFolderPath, "blogPosts.json"), content);
 
-export const writePostCover = async (fileName, content) =>
-  await writeFile(join(postCoverPath, fileName), content);
+export const writePostCover = async (fileName, content) =>  await writeFile(join(postCoverPath, fileName), content);
 
 export const getCurrentFolderPath = (currentFile) =>
   dirname(fileURLToPath(currentFile));
