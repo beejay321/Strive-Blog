@@ -188,58 +188,6 @@ BlogPostsRouter.delete("/:id", async (req, res, next) => {
   }
 });
 
-filesRouter.post(
-  "/:id/upload",
-  multer().single("img"),
-  async (req, res, next) => {
-    try {
-      console.log(req.file);
-      await writeImage(req.file.originalname, req.file.buffer);
-      console.log(imagePath);
-      console.log(publicFolderPath);
-      //   const link = `http://localhost:3001/img/${req.file.originalname}`;
-      //   res.send(req.file.originalname);
 
-      //   const Products = await getProducts();
-      //   console.log(Products);
-
-      //   const updatedProducts = Products.map((product) => {
-      //     if (req.params.id === product._id) {
-      //       product.imageUrl === req.file.originalname;
-      //     }
-      //     console.log(product);
-      //   });
-      //   await writeProducts(updatedProducts);
-      res.send("ok");
-    } catch (error) {
-      next(error);
-    }
-  }
-);
-
-const remainingProducts = Products.filter((p) => p._id !== req.params.id);
-
-const updatedProduct = { ...req.body, _id: req.params.id };
-
-remainingProducts.push(updatedProduct);
-
-writeProducts(remainingProducts);
-
-res.send(updatedProduct);
-
-const newProduct = {
-  ...req.body,
-  img: link,
-  createdAt: new Date(),
-  // _id: uniqid(),
-};
-console.log(newProduct);
-
-const Products = await getProducts();
-Products.push(newProduct);
-console.log(Products);
-
-await writeProducts(Products);
-res.status(201).send(newProduct);
 
 export default BlogPostsRouter;
