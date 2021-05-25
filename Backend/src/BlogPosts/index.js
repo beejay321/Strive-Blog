@@ -111,29 +111,18 @@ BlogPostsRouter.post(
   async (req, res, next) => {
     try {
       console.log(req.file);
-      // await writePostCover(req.file.originalname, req.file.buffer);
-      console.log()
-      const fileName = `${req.file.originalname}`;
-      const link = `http://localhost:3001/img/cover/${fileName}`;
-      // imageFile = link;
-      // res.send("ok");
+      await writePostCover(req.file.originalname, req.file.buffer);
+      const link = `http://localhost:3001/img/cover/${req.file.originalname}`;
 
-      console.log(req.body);
-
-      const newBlogPost = {
-        ...req.body,
-        cover: link,
-        createdAt: new Date(),
-        _id: uniqid(),
-      };
-      // console.log(newBlogPost);
-
-      const blogPosts = await getPosts();
-      blogPosts.push(newBlogPost);
-      // console.log(blogPosts);
-
-      await writePosts(blogPosts);
-      res.status(201).send(newBlogPost);
+      const Posts = await getPosts();
+      let updatedPosts = Posts.map((post) => {
+        if (post._id === req.params.id) {
+          post.cover = link;
+        }
+        return post;
+      });
+      await writePosts(updatedPosts);
+      res.status(201).send();
     } catch (error) {
       next(error);
     }
@@ -199,7 +188,6 @@ BlogPostsRouter.delete("/:id", async (req, res, next) => {
   }
 });
 
-
 filesRouter.post(
   "/:id/upload",
   multer().single("img"),
@@ -212,8 +200,8 @@ filesRouter.post(
       //   const link = `http://localhost:3001/img/${req.file.originalname}`;
       //   res.send(req.file.originalname);
 
-    //   const Products = await getProducts();
-    //   console.log(Products);
+      //   const Products = await getProducts();
+      //   console.log(Products);
 
       //   const updatedProducts = Products.map((product) => {
       //     if (req.params.id === product._id) {
@@ -231,31 +219,27 @@ filesRouter.post(
 
 const remainingProducts = Products.filter((p) => p._id !== req.params.id);
 
-      const updatedProduct = { ...req.body, _id: req.params.id };
+const updatedProduct = { ...req.body, _id: req.params.id };
 
-      remainingProducts.push(updatedProduct);
+remainingProducts.push(updatedProduct);
 
-      writeProducts(remainingProducts);
+writeProducts(remainingProducts);
 
-      res.send(updatedProduct);
+res.send(updatedProduct);
 
-      const newProduct = {
-        ...req.body,
-        img: link,
-        createdAt: new Date(),
-        // _id: uniqid(),
-      };
-      console.log(newProduct);
+const newProduct = {
+  ...req.body,
+  img: link,
+  createdAt: new Date(),
+  // _id: uniqid(),
+};
+console.log(newProduct);
 
-      const Products = await getProducts();
-      Products.push(newProduct);
-      console.log(Products);
+const Products = await getProducts();
+Products.push(newProduct);
+console.log(Products);
 
-      await writeProducts(Products);
-      res.status(201).send(newProduct);
-
-
-
-
+await writeProducts(Products);
+res.status(201).send(newProduct);
 
 export default BlogPostsRouter;
