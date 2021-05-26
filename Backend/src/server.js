@@ -14,7 +14,8 @@ import { dirname, join } from "path";
 
 const server = express();
 
-const port = 3001;
+const port = process.env.PORT || 3001;
+
 const publicFolderPath = join(
   getCurrentFolderPath(import.meta.url),
   "../public"
