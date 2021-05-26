@@ -9,6 +9,8 @@ import { blogPostsValidation } from "./validation.js";
 import { getPosts, writePosts } from "../lib/fs-tools.js";
 import { writePostCover, readPostCover } from "../lib/fs-tools.js";
 import multer from "multer";
+import { generatePDFStream } from "../lib/pdf.js";
+import { pipeline } from "stream";
 
 const BlogPostsRouter = express.Router();
 
@@ -38,23 +40,35 @@ BlogPostsRouter.get("/", async (req, res, next) => {
   }
 });
 
-/****************GET SINGLE POST******************/
-
-BlogPostsRouter.get("/:id", async (req, res, next) => {
+/****************Download pdf******************/
+BlogPostsRouter.get("/pdfDownload", async (req, res, next) => {
   try {
-    const blogPosts = await getPosts();
-    console.log(req.params);
-    const blogPost = blogPosts.find((a) => a._id === req.params.id);
-    if (blogPost) {
-      res.send(blogPost);
-    } else {
-      next(createError(404, `Post ${req.params.id} not found `));
-      // createError(err.status, error.message)
-    }
+    const source = generatePDFStream();
+    const destination = res;
+    res.setHeader("Content-Disposition", "attachment; filename=export.pdf");
+    pipeline(source, destination, (err) => next(err));
   } catch (error) {
     next(error);
   }
 });
+
+// /****************GET SINGLE POST******************/
+
+// BlogPostsRouter.get("/:id", async (req, res, next) => {
+//   try {
+//     const blogPosts = await getPosts();
+//     console.log(req.params);
+//     const blogPost = blogPosts.find((a) => a._id === req.params.id);
+//     if (blogPost) {
+//       res.send(blogPost);
+//     } else {
+//       next(createError(404, `Post ${req.params.id} not found `));
+//       // createError(err.status, error.message)
+//     }
+//   } catch (error) {
+//     next(error);
+//   }
+// });
 /****************GET COMMENTS ON POST******************/
 
 BlogPostsRouter.get("/:id/comments", async (req, res, next) => {
