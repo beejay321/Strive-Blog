@@ -1,6 +1,20 @@
 import PdfPrinter from "pdfmake";
+import { getPosts, writePosts } from "./fs-tools.js";
 
 export const generatePDFStream = (data) => {
+  //   const Posts = getPosts();
+  //   let updatedPosts = Posts.map((post) => {
+  //     post = [
+  //       {
+  //         image: post.cover,
+  //       },
+  //       {
+  //         text: post.content,
+  //       },
+  //     ];
+  //     return post;
+  //   });
+
   const fonts = {
     Roboto: {
       normal: "Helvetica",
@@ -18,8 +32,9 @@ export const generatePDFStream = (data) => {
         image: "public/img/cover/images.jpg",
         width: 500,
       },
-      
+
       {
+        // text: post.content,
         text: "I was a salesman 6 months ago, and now I am a professional web developer",
         style: "header",
       },
