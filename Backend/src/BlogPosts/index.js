@@ -122,7 +122,7 @@ BlogPostsRouter.post(
         return post;
       });
       await writePosts(updatedPosts);
-      res.status(201).send();
+      res.status(201).send(link);
     } catch (error) {
       next(error);
     }
@@ -187,7 +187,5 @@ BlogPostsRouter.delete("/:id", async (req, res, next) => {
     next(error);
   }
 });
-
-
 
 export default BlogPostsRouter;
