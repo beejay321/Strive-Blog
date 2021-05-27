@@ -3,8 +3,7 @@ import { getPosts, writePosts } from "./fs-tools.js";
 import { promisify } from "util";
 import { pipeline } from "stream";
 
-
-const asyncPipeline = promisify(pipeline)
+const asyncPipeline = promisify(pipeline);
 
 export const generatePDFStream = (data) => {
   //   const Posts = getPosts();
@@ -81,6 +80,4 @@ export const generatePDFStream = (data) => {
   return pdfReadableStream;
 };
 
-export const generatePDF = async () =>{
-
-}
+export const generatePDF = async () => {};

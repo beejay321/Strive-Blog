@@ -13,11 +13,15 @@ import {
   getPostsSource,
 } from "../lib/fs-tools.js";
 import multer from "multer";
+import { v2 as cloudinary } from "cloudinary";
+import { CloudinaryStorage } from "multer-storage-cloudinary";
 import { generatePDFStream } from "../lib/pdf.js";
 import { pipeline } from "stream";
 import { Transform } from "json2csv";
 
 const BlogPostsRouter = express.Router();
+
+
 
 // const filePath = fileURLToPath(import.meta.url);
 // const __dirname = dirname(filePath);
@@ -70,8 +74,8 @@ BlogPostsRouter.get("/pdftocsv", async (req, res, next) => {
 /***************************Download csv**********************************************/
 BlogPostsRouter.get("/csvDownload", async (req, res, next) => {
   try {
-    const fields = ["_id", "category", "title", "cover", "content"];
-    const options = [fields];
+    const fields = ["_id", "category", "title", "cover"];
+    const options = { fields };
     const jsonToCsv = new Transform(options);
     const source = getPostsSource();
     res.setHeader("Content-Disposition", "attachment; filename=export.csv");
@@ -149,7 +153,7 @@ BlogPostsRouter.post("/", blogPostsValidation, async (req, res, next) => {
 
 /****************UPLOAD COVER******************/
 BlogPostsRouter.post(
-  "/:id/uploadCover",
+  "/:id/uploadCove",
   multer().single("cover"),
   async (req, res, next) => {
     try {
@@ -171,6 +175,33 @@ BlogPostsRouter.post(
     }
   }
 );
+/****************UPLOAD COVER USING CLOUDINARY******************/
+const cloudinaryStorage = new CloudinaryStorage({
+  cloudinary,
+  params: {
+    folder: "Strive",
+  },
+});
+
+const upload = multer({ storage: cloudinaryStorage }).single("cover");
+
+BlogPostsRouter.post("/:id/uploadCover", upload, async (req, res, next) => {
+  try {
+    console.log(req.file);
+    const Posts = await getPosts();
+    let updatedPosts = Posts.map((post) => {
+      if (post._id === req.params.id) {
+        post.cover = req.file.path;
+        console.log(post.cover);
+      }
+      return post;
+    });
+    await writePosts(updatedPosts);
+    res.send(req.file.path);
+  } catch (error) {
+    next(error);
+  }
+});
 
 /****************POST BLOGPOSTS COMMENTS******************/
 
