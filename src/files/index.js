@@ -20,4 +20,4 @@ filesRouter.post("/:id/uploadCover", multer().single("cover"), async (req, res, 
       next(error)
     }
   })
-  export default filesRouter
+  // export default filesRouter
