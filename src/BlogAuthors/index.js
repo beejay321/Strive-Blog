@@ -6,6 +6,11 @@ import { fileURLToPath } from "url";
 import { dirname, join } from "path";
 import { parse } from "node:path";
 import { url } from "inspector";
+import multer from "multer";
+import { generatePDFStream } from "../lib/pdf.js";
+import { pipeline } from "stream";
+import { Transform } from "json2csv";
+import { getAuthorsSource } from "../lib/fs-tools.js";
 
 const authorsRouter = express.Router();
 
@@ -29,17 +34,17 @@ authorsRouter.get("/", (req, res) => {
   // });
 });
 
-authorsRouter.get("/:id", (req, res) => {
-  const contentAsBuffer = fs.readFileSync(authorsJSONPath);
-  const contentAsString = contentAsBuffer.toString();
-  const authors = JSON.parse(contentAsString);
-  console.log(req.params);
+// authorsRouter.get("/:id", (req, res) => {
+//   const contentAsBuffer = fs.readFileSync(authorsJSONPath);
+//   const contentAsString = contentAsBuffer.toString();
+//   const authors = JSON.parse(contentAsString);
+//   console.log(req.params);
 
-  const author = authors.find((a) => a._id === req.params.id);
+//   const author = authors.find((a) => a._id === req.params.id);
 
-  res.send(author);
-  // res.send(authors);
-});
+//   res.send(author);
+//   // res.send(authors);
+// });
 
 authorsRouter.post("/", (req, res) => {
   console.log(req.url);
@@ -87,6 +92,22 @@ authorsRouter.delete("/:id", (req, res) => {
   // res.send("I am the delete request");
 
   res.status(204).send();
+});
+
+
+
+/****************Download csv******************/
+authorsRouter.get("/csvDownload", async (req, res, next) => {
+  try {
+    const fields = ["_id", "name", "surname", "email", "Date of Birth"];
+    const options = [fields];
+    const jsonToCsv = new Transform(options);
+    const source = getAuthorsSource();
+    res.setHeader("Content-Disposition", "attachment; filename=export.csv");
+    pipeline(source, jsonToCsv, res, (err) => next(err)); // source (file on disk) -> transform (json 2 csv) -> destination (rsponse)
+  } catch (error) {
+    next(error);
+  }
 });
 
 export default authorsRouter;

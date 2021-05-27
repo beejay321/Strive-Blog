@@ -20,10 +20,17 @@ export const writeAuthors = async (content) =>
 export const writePosts = async (content) =>
   await writeJSON(join(dataFolderPath, "blogPosts.json"), content);
 
-export const writePostCover = async (fileName, content) =>  await writeFile(join(postCoverPath, fileName), content);
+export const writePostCover = async (fileName, content) =>
+  await writeFile(join(postCoverPath, fileName), content);
 
 export const getCurrentFolderPath = (currentFile) =>
   dirname(fileURLToPath(currentFile));
 
 export const readPostCover = (fileName) =>
   createReadStream(join(postCoverPath, fileName));
+
+export const getAuthorsSource = () =>
+  createReadStream(join(dataFolderPath, "authors.json"));
+
+export const getPostsSource = () =>
+  createReadStream(join(dataFolderPath, "blogPosts.json"));

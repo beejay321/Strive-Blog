@@ -7,10 +7,15 @@ import { validationResult } from "express-validator";
 import createError from "http-errors";
 import { blogPostsValidation } from "./validation.js";
 import { getPosts, writePosts } from "../lib/fs-tools.js";
-import { writePostCover, readPostCover } from "../lib/fs-tools.js";
+import {
+  writePostCover,
+  readPostCover,
+  getPostsSource,
+} from "../lib/fs-tools.js";
 import multer from "multer";
 import { generatePDFStream } from "../lib/pdf.js";
 import { pipeline } from "stream";
+import { Transform } from "json2csv";
 
 const BlogPostsRouter = express.Router();
 
@@ -47,6 +52,30 @@ BlogPostsRouter.get("/pdfDownload", async (req, res, next) => {
     const destination = res;
     res.setHeader("Content-Disposition", "attachment; filename=export.pdf");
     pipeline(source, destination, (err) => next(err));
+  } catch (error) {
+    next(error);
+  }
+});
+/******************************Download pdf******************************************/
+BlogPostsRouter.get("/pdftocsv", async (req, res, next) => {
+  try {
+    await generatePDF();
+
+    res.send("generated");
+  } catch (error) {
+    next(error);
+  }
+});
+
+/***************************Download csv**********************************************/
+BlogPostsRouter.get("/csvDownload", async (req, res, next) => {
+  try {
+    const fields = ["_id", "category", "title", "cover", "content"];
+    const options = [fields];
+    const jsonToCsv = new Transform(options);
+    const source = getPostsSource();
+    res.setHeader("Content-Disposition", "attachment; filename=export.csv");
+    pipeline(source, jsonToCsv, res, (err) => next(err)); // source (file on disk) -> transform (json 2 csv) -> destination (rsponse)
   } catch (error) {
     next(error);
   }
