@@ -1,9 +1,11 @@
 import React, { Component } from "react";
-import { Container, Image } from "react-bootstrap";
+import { Container, Image, Button } from "react-bootstrap";
 import { withRouter } from "react-router";
 import BlogAuthor from "../../components/blog/blog-author";
 import posts from "../../data/posts.json";
 import "./styles.css";
+import { Link } from "react-router-dom";
+
 class Blog extends Component {
   state = {
     blog: {},
@@ -19,6 +21,33 @@ class Blog extends Component {
       this.props.history.push("/404");
     }
   }
+
+  getPdf = async () => {
+    
+
+    try {
+      const response = await fetch(
+        `http://localhost:3001/blogPosts/pdfDownload`,
+        {
+          headers: {
+            "Content-Type": "application/json",
+            },
+        }
+      );
+      console.log(response);
+      if (response.ok) {
+        let data = await response.json();
+        console.log(data);
+        this.setState({ items: data, isError: false, isLoading: false });
+      } else {
+        console.log(" we got an error");
+        this.setState({ isError: true, isLoading: false });
+      }
+    } catch (error) {
+      console.log(error);
+      this.setState({ isError: true, isLoading: false });
+    }
+  };
 
   render() {
     const { loading, blog } = this.state;
@@ -42,6 +71,9 @@ class Blog extends Component {
             </div>
 
             <div dangerouslySetInnerHTML={{ __html: blog.content }}></div>
+            <Link>
+              <Button>Export Pdf</Button>
+            </Link>
           </Container>
         </div>
       );
