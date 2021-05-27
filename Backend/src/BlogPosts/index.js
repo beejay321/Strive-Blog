@@ -33,7 +33,7 @@ const BlogPostsRouter = express.Router();
 BlogPostsRouter.get("/", async (req, res, next) => {
   try {
     const blogPosts = await getPosts();
-    console.log(blogPosts);
+    // console.log(blogPosts);
     res.send(blogPosts);
   } catch (error) {
     next(error);
