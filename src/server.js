@@ -11,6 +11,7 @@ import {
 } from "./errorHandlers.js";
 import { getCurrentFolderPath } from "./lib/fs-tools.js";
 import { dirname, join } from "path";
+import mongoose from "mongoose";
 
 const server = express();
 
@@ -38,8 +39,8 @@ const corsOptions = {
     }
   },
 };
-server.use(cors(corsOptions));
-// server.use(cors());
+// server.use(cors(corsOptions));
+server.use(cors());
 server.use(express.json());
 
 server.use("/authors", authorsRoutes);
@@ -54,7 +55,13 @@ server.use(catchAllErrorHandler);
 
 // console.log(listEndpoints(server));
 console.table(listEndpoints(server));
-
-server.listen(port, () => {
-  console.log("Server is running on port: ", port);
-});
+mongoose
+  .connect(process.env.MONGO_CONNECTION, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+  })
+  .then(() => {
+    server.listen(port, () => {
+      console.log("Server is running on port: ", port);
+    });
+  });
