@@ -18,26 +18,23 @@ import { CloudinaryStorage } from "multer-storage-cloudinary";
 import { generatePDFStream } from "../lib/pdf.js";
 import { pipeline } from "stream";
 import { Transform } from "json2csv";
+import blogPostsModel from "./schema.js";
 
 const BlogPostsRouter = express.Router();
 
-const filePath = fileURLToPath(import.meta.url);
-const __dirname = dirname(filePath);
-const blogPostsJSONPath = join(__dirname, "../data/blogPosts.json");
-
-// const getPosts = () => {
-//   const content = fs.readFileSync(blogPostsJSONPath);
-//   console.log(content);
-//   const blogPosts = JSON.parse(content);
-//   return blogPosts;
-// };
-// const writePosts = (blogPosts) => {
-//   fs.writeFileSync(blogPostsJSONPath, JSON.stringify(blogPosts));
-// };
-
 /****************POST BLOGPOSTS******************/
 
-BlogPostsRouter.post("/", blogPostsValidation, async (req, res, next) => {
+BlogPostsRouter.post("/",  async (req, res, next) => {
+  try {
+    const newPost = new blogPostsModel(req.body);
+
+    const mongoRes = await newPost.save();
+    res.status(201).send(mongoRes);
+  } catch (error) {
+    next(error);
+  }
+});
+/* BlogPostsRouter.post("/", blogPostsValidation, async (req, res, next) => {
   try {
     const errors = validationResult(req);
 
@@ -59,9 +56,7 @@ BlogPostsRouter.post("/", blogPostsValidation, async (req, res, next) => {
   } catch (error) {
     next(error);
   }
-});
-
-
+}); */
 
 /****************GET POSTS******************/
 
@@ -157,10 +152,11 @@ BlogPostsRouter.get("/:id/comments", async (req, res, next) => {
   }
 });
 
-
-
 /****************UPLOAD COVER******************/
-BlogPostsRouter.post("/:id/uploadCove", multer().single("cover"),async (req, res, next) => {
+BlogPostsRouter.post(
+  "/:id/uploadCove",
+  multer().single("cover"),
+  async (req, res, next) => {
     try {
       console.log(req.file);
       await writePostCover(req.file.originalname, req.file.buffer);
