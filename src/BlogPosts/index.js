@@ -21,11 +21,9 @@ import { Transform } from "json2csv";
 
 const BlogPostsRouter = express.Router();
 
-
-
-// const filePath = fileURLToPath(import.meta.url);
-// const __dirname = dirname(filePath);
-// const blogPostsJSONPath = join(__dirname, "../data/blogPosts.json");
+const filePath = fileURLToPath(import.meta.url);
+const __dirname = dirname(filePath);
+const blogPostsJSONPath = join(__dirname, "../data/blogPosts.json");
 
 // const getPosts = () => {
 //   const content = fs.readFileSync(blogPostsJSONPath);
@@ -37,10 +35,42 @@ const BlogPostsRouter = express.Router();
 //   fs.writeFileSync(blogPostsJSONPath, JSON.stringify(blogPosts));
 // };
 
+/****************POST BLOGPOSTS******************/
+
+BlogPostsRouter.post("/", blogPostsValidation, async (req, res, next) => {
+  try {
+    const errors = validationResult(req);
+
+    if (!errors.isEmpty()) {
+      next(createError(400, { errorList: errors }));
+    } else {
+      console.log(req.body);
+
+      const newBlogPost = { ...req.body, createdAt: new Date(), _id: uniqid() };
+      // console.log(newBlogPost);
+
+      const blogPosts = await getPosts();
+      blogPosts.push(newBlogPost);
+      // console.log(blogPosts);
+
+      await writePosts(blogPosts);
+      res.status(201).send(newBlogPost._id);
+    }
+  } catch (error) {
+    next(error);
+  }
+});
+
+
+
 /****************GET POSTS******************/
 
 BlogPostsRouter.get("/", async (req, res, next) => {
   try {
+    console.log(import.meta.url);
+    console.log(filePath);
+    console.log(__dirname);
+    console.log(blogPostsJSONPath);
     const blogPosts = await getPosts();
     // console.log(blogPosts);
     res.send(blogPosts);
@@ -49,10 +79,29 @@ BlogPostsRouter.get("/", async (req, res, next) => {
   }
 });
 
+/****************GET SINGLE POST******************/
+
+BlogPostsRouter.get("/:id", async (req, res, next) => {
+  try {
+    const blogPosts = await getPosts();
+    console.log(req.params);
+    const blogPost = blogPosts.find((a) => a._id === req.params.id);
+    if (blogPost) {
+      res.send(blogPost);
+    } else {
+      next(createError(404, `Post ${req.params.id} not found `));
+      // createError(err.status, error.message)
+    }
+  } catch (error) {
+    next(error);
+  }
+});
+
 /****************Download pdf******************/
 BlogPostsRouter.get("/pdfDownload", async (req, res, next) => {
   try {
-    const source = generatePDFStream();
+    const blogPosts = await getPosts();
+    const source = generatePDFStream(blogPosts);
     const destination = res;
     res.setHeader("Content-Disposition", "attachment; filename=export.pdf");
     pipeline(source, destination, (err) => next(err));
@@ -85,23 +134,6 @@ BlogPostsRouter.get("/csvDownload", async (req, res, next) => {
   }
 });
 
-// /****************GET SINGLE POST******************/
-
-// BlogPostsRouter.get("/:id", async (req, res, next) => {
-//   try {
-//     const blogPosts = await getPosts();
-//     console.log(req.params);
-//     const blogPost = blogPosts.find((a) => a._id === req.params.id);
-//     if (blogPost) {
-//       res.send(blogPost);
-//     } else {
-//       next(createError(404, `Post ${req.params.id} not found `));
-//       // createError(err.status, error.message)
-//     }
-//   } catch (error) {
-//     next(error);
-//   }
-// });
 /****************GET COMMENTS ON POST******************/
 
 BlogPostsRouter.get("/:id/comments", async (req, res, next) => {
@@ -125,37 +157,10 @@ BlogPostsRouter.get("/:id/comments", async (req, res, next) => {
   }
 });
 
-/****************POST BLOGPOSTS******************/
 
-BlogPostsRouter.post("/", blogPostsValidation, async (req, res, next) => {
-  try {
-    const errors = validationResult(req);
-
-    if (!errors.isEmpty()) {
-      next(createError(400, { errorList: errors }));
-    } else {
-      console.log(req.body);
-
-      const newBlogPost = { ...req.body, createdAt: new Date(), _id: uniqid() };
-      // console.log(newBlogPost);
-
-      const blogPosts = await getPosts();
-      blogPosts.push(newBlogPost);
-      // console.log(blogPosts);
-
-      await writePosts(blogPosts);
-      res.status(201).send(newBlogPost._id);
-    }
-  } catch (error) {
-    next(error);
-  }
-});
 
 /****************UPLOAD COVER******************/
-BlogPostsRouter.post(
-  "/:id/uploadCove",
-  multer().single("cover"),
-  async (req, res, next) => {
+BlogPostsRouter.post("/:id/uploadCove", multer().single("cover"),async (req, res, next) => {
     try {
       console.log(req.file);
       await writePostCover(req.file.originalname, req.file.buffer);
