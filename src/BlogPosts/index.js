@@ -24,7 +24,7 @@ const BlogPostsRouter = express.Router();
 
 /****************POST BLOGPOSTS******************/
 
-BlogPostsRouter.post("/",  async (req, res, next) => {
+BlogPostsRouter.post("/", async (req, res, next) => {
   try {
     const newPost = new blogPostsModel(req.body);
 
@@ -59,24 +59,50 @@ BlogPostsRouter.post("/",  async (req, res, next) => {
 }); */
 
 /****************GET POSTS******************/
-
 BlogPostsRouter.get("/", async (req, res, next) => {
   try {
-    console.log(import.meta.url);
-    console.log(filePath);
-    console.log(__dirname);
-    console.log(blogPostsJSONPath);
-    const blogPosts = await getPosts();
-    // console.log(blogPosts);
-    res.send(blogPosts);
+    const allPosts = await blogPostsModel.find();
+
+    res.send(allPosts);
   } catch (error) {
+    console.log(error);
     next(error);
   }
 });
 
-/****************GET SINGLE POST******************/
+// BlogPostsRouter.get("/", async (req, res, next) => {
+//   try {
+//     console.log(import.meta.url);
+//     console.log(filePath);
+//     console.log(__dirname);
+//     console.log(blogPostsJSONPath);
+//     const blogPosts = await getPosts();
+//     // console.log(blogPosts);
+//     res.send(blogPosts);
+//   } catch (error) {
+//     next(error);
+//   }
+// });
 
+/****************GET SINGLE POST******************/
 BlogPostsRouter.get("/:id", async (req, res, next) => {
+  try {
+    const singlePost = await blogPostsModel.findById(req.params.id);
+    // const singlePosts = await blogPostsModel.findOne(${mongo query})
+
+    if (singlePost) {
+      res.send(singlePost);
+    } else {
+      next(createError(404, `Post ${req.params.id} not found `));
+      // createError(err.status, error.message)
+    }
+  } catch (error) {
+    console.log(error);
+    next(error);
+  }
+});
+
+/* BlogPostsRouter.get("/:id", async (req, res, next) => {
   try {
     const blogPosts = await getPosts();
     console.log(req.params);
@@ -90,7 +116,69 @@ BlogPostsRouter.get("/:id", async (req, res, next) => {
   } catch (error) {
     next(error);
   }
+}); */
+
+/****************UPDATE POST******************/
+BlogPostsRouter.put("/:id", async (req, res, next) => {
+  try {
+    const singlePost = await blogPostsModel.findByIdAndUpdate(
+      req.params.id,
+      req.body,
+      { runValidators: true, new: true }
+    );
+
+    res.send(singlePost);
+  } catch (error) {
+    next(error);
+  }
 });
+
+/* BlogPostsRouter.put("/:id", async (req, res, next) => {
+  try {
+    const blogPosts = await getPosts();
+    const remainingBlogPosts = blogPosts.filter(
+      (blogPost) => blogPost._id !== req.params.id
+    );
+
+    const updatedBlogPost = { ...req.body, _id: req.params.id };
+
+    remainingBlogPosts.push(updatedBlogPost);
+
+    writePosts(remainingBlogPosts);
+
+    res.send(updatedBlogPost);
+  } catch (error) {
+    next(error);
+  }
+}); */
+
+/****************DELETE POST******************/
+BlogPostsRouter.delete("/:id", async (req, res, next) => {
+  try {
+    const singlePost = await blogPostsModel.findByIdAndDelete(req.params.id);
+
+    if (singlePost) {
+      res.status(204).send();
+    }
+  } catch (error) {
+    next(error);
+  }
+});
+
+/* BlogPostsRouter.delete("/:id", async (req, res, next) => {
+  try {
+    const blogPosts = await getPosts();
+    const remainingBlogPosts = blogPosts.filter(
+      (blogPost) => blogPost._id !== req.params.id
+    );
+
+    writePosts(remainingBlogPosts);
+    res.status(204).send();
+  } catch (error) {
+    next(error);
+  }
+});
+ */
 
 /****************Download pdf******************/
 BlogPostsRouter.get("/pdfDownload", async (req, res, next) => {
