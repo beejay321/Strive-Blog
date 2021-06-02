@@ -3,30 +3,45 @@ const { Schema, model } = mongoose;
 
 const blogPostsSchema = new Schema(
   {
-    category: String,
-    title: String,
-    cover: String,
-    author: {
-      name: String,
-      avatar: String,
+    category: {
+      type: String,
+      required: true,
     },
-    content: String,
-  }
-  // {
-  //     "category": "Student Stories",
-  //     "title": "I was a salesman 6 months ago, and now I am a professional web developer",
-  //     "cover": "https://striveschool.ghost.io/content/images/2020/11/Ervins.png",
-  //     "readTime": {
-  //         "value": 2,
-  //         "unit": "minute"
-  //     },
-  //     "author": {
-  //         "name": "Bri Cho",
-  //         "avatar": "https://striveschool.ghost.io/content/images/2020/11/FBBRRZy5_400x400.jpg"
-  //     },
-  //     "content": "A short story"
-
-  // }
+    title: {
+      type: String,
+      required: true,
+    },
+    cover: {
+      type: String,
+      required: true,
+    },
+    readTime: {
+      value: {
+        type: Number,
+        required: true,
+      },
+      unit: {
+        type: String,
+        required: true,
+      },
+    },
+    author: {
+      name: {
+        type: String,
+        required: true,
+      },
+      avatar: {
+        type: String,
+        required: true,
+      },
+    },
+    content: {
+      type: String,
+      required: true,
+    },
+    comments: [{ name: String, text: String, date: Date }],
+  },
+  { timestamps: true }
 );
 
-export default model("blogPosts", blogPostsSchema);
+export default model("blogPost", blogPostsSchema);
