@@ -40,7 +40,7 @@ BlogPostsRouter.get("/", async (req, res, next) => {
 /****************GET SINGLE POST******************/
 BlogPostsRouter.get("/:id", async (req, res, next) => {
   try {
-    const singlePost = await blogPostsModel.findById(req.params.id);
+    const singlePost = await blogPostsModel.findById(req.params.id).populate("author");
     // const singlePosts = await blogPostsModel.findOne(${mongo query})
 
     if (singlePost) {

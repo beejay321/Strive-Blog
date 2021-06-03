@@ -16,11 +16,12 @@ authorsRouter.post("/", async (req, res, next) => {
     const mongoRes = await newAuthor.save();
     res.status(201).send(mongoRes);
   } catch (error) {
+    console.log(error)
     next(error);
   }
 });
 
-authorsRouter.get("/", async (req, res) => {
+authorsRouter.get("/", async (req, res, next) => {
   try {
     const authors = await authorsModel.find();
     res.send(authors);
@@ -42,33 +43,6 @@ authorsRouter.get("/:id", async (req, res) => {
     console.log(error);
     next(error);
   }
-});
-
-authorsRouter.put("/:id", (req, res) => {
-  const authors = JSON.parse(fs.readFileSync(authorsJSONPath).toString());
-
-  const remainingAuthors = authors.filter(
-    (author) => author._id !== req.params.id
-  );
-
-  const updatedAuthor = { ...req.body, _id: req.params.id };
-
-  remainingAuthors.push(updatedAuthor);
-
-  fs.writeFileSync(authorsJSONPath, JSON.stringify(remainingAuthors));
-
-  res.send(updatedAuthor);
-});
-
-authorsRouter.delete("/:id", (req, res) => {
-  const authors = JSON.parse(fs.readFileSync(authorsJSONPath).toString());
-  const remainingAuthors = authors.filter(
-    (author) => author._id !== req.params.id
-  );
-  fs.writeFileSync(authorsJSONPath, JSON.stringify(remainingAuthors));
-  // res.send("I am the delete request");
-
-  res.status(204).send();
 });
 
 /****************Download csv******************/
