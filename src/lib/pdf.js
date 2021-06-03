@@ -2,10 +2,12 @@ import PdfPrinter from "pdfmake";
 import { getPosts, writePosts } from "./fs-tools.js";
 import { promisify } from "util";
 import { pipeline } from "stream";
+// import data from "../data/blogPosts.json"
 
 const asyncPipeline = promisify(pipeline);
 
 export const generatePDFStream = (data) => {
+  
   //   const Posts = getPosts();
   //   let updatedPosts = Posts.map((post) => {
   //     post = [

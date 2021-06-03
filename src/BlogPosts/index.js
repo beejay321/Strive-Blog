@@ -58,11 +58,7 @@ BlogPostsRouter.get("/:id", async (req, res, next) => {
 /****************UPDATE POST******************/
 BlogPostsRouter.put("/:id", async (req, res, next) => {
   try {
-    const singlePost = await blogPostsModel.findByIdAndUpdate(
-      req.params.id,
-      req.body,
-      { runValidators: true, new: true }
-    );
+    const singlePost = await blogPostsModel.findByIdAndUpdate(req.params.id, req.body, { runValidators: true, new: true });
 
     res.send(singlePost);
   } catch (error) {
@@ -121,29 +117,25 @@ BlogPostsRouter.get("/csvDownload", async (req, res, next) => {
 });
 
 /****************UPLOAD COVER******************/
-BlogPostsRouter.post(
-  "/:id/uploadCove",
-  multer().single("cover"),
-  async (req, res, next) => {
-    try {
-      console.log(req.file);
-      await writePostCover(req.file.originalname, req.file.buffer);
-      const link = `http://localhost:3001/img/cover/${req.file.originalname}`;
+BlogPostsRouter.post("/:id/uploadCove", multer().single("cover"), async (req, res, next) => {
+  try {
+    console.log(req.file);
+    await writePostCover(req.file.originalname, req.file.buffer);
+    const link = `http://localhost:3001/img/cover/${req.file.originalname}`;
 
-      const Posts = await getPosts();
-      let updatedPosts = Posts.map((post) => {
-        if (post._id === req.params.id) {
-          post.cover = link;
-        }
-        return post;
-      });
-      await writePosts(updatedPosts);
-      res.status(201).send(link);
-    } catch (error) {
-      next(error);
-    }
+    const Posts = await getPosts();
+    let updatedPosts = Posts.map((post) => {
+      if (post._id === req.params.id) {
+        post.cover = link;
+      }
+      return post;
+    });
+    await writePosts(updatedPosts);
+    res.status(201).send(link);
+  } catch (error) {
+    next(error);
   }
-);
+});
 /****************UPLOAD COVER USING CLOUDINARY******************/
 const cloudinaryStorage = new CloudinaryStorage({
   cloudinary,
@@ -180,11 +172,7 @@ BlogPostsRouter.post("/:id", async (req, res, next) => {
     const newComment = { ...req.body, date: new Date() };
     console.log(newComment);
     if (newComment) {
-      await blogPostsModel.findByIdAndUpdate(
-        req.params.id,
-        { $push: { comments: newComment } },
-        { runValidators: true, new: true }
-      );
+      await blogPostsModel.findByIdAndUpdate(req.params.id, { $push: { comments: newComment } }, { runValidators: true, new: true });
       res.send(singlePost);
     }
   } catch (error) {
@@ -196,9 +184,7 @@ BlogPostsRouter.post("/:id", async (req, res, next) => {
 
 BlogPostsRouter.get("/:id/comments", async (req, res, next) => {
   try {
-    const commentsById = await blogPostsModel.findById(req.params.id, {
-      comments: 1,
-    });
+    const commentsById = await blogPostsModel.findById(req.params.id, { comments: 1 });
     if (commentsById) {
       res.send(commentsById);
     } else {
@@ -237,22 +223,23 @@ BlogPostsRouter.get("/:id/comments/:commentId", async (req, res, next) => {
 
 BlogPostsRouter.put("/:id/comments/:commentId", async (req, res, next) => {
   try {
-    const singlecommentById = await blogPostsModel.findOneAndUpdate(
-    {
-      _id: req.params.id,
-      "comments._id": req.params.commentId,
-    }, 
-    {$set: {"comments.$": req.body}
-    },
-    {
-      runValidators: true,
+    const commentsById = await blogPostsModel.findOneAndUpdate(
+      {
+        _id: req.params.id,
+        "comments._id": req.params.commentId,
+      },
+      {
+        $set: { "comments.$": req.body }, // comments.$ is a positionaö ooperator that kelps to know what particular comment is targeted
+      },
+      {
+        runValidators: true,
         new: true,
-    }
+      }
     );
-    if (singlecommentById) {
-      res.send(singlecommentById)
+    if (commentsById) {
+      res.send(commentsById);
     } else {
-      next(createError(404, `comment ${req.params.commentId} not found`))
+      next(createError(404, `comment ${req.params.commentId} not found`));
     }
   } catch (error) {
     next(error);
@@ -263,11 +250,7 @@ BlogPostsRouter.put("/:id/comments/:commentId", async (req, res, next) => {
 
 BlogPostsRouter.delete("/:id/comments/:commentId", async (req, res, next) => {
   try {
-    await blogPostsModel.findByIdAndUpdate(
-      req.params.id,
-      { $pull: { comments: { _id: req.params.commentId } } },
-      { new: true }
-    );
+    await blogPostsModel.findByIdAndUpdate(req.params.id, { $pull: { comments: { _id: req.params.commentId } } }, { new: true });
     res.status(204).send();
   } catch (error) {
     next(error);

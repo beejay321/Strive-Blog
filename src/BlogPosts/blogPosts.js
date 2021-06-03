@@ -7,11 +7,7 @@ import { validationResult } from "express-validator";
 import createError from "http-errors";
 import { blogPostsValidation } from "./validation.js";
 import { getPosts, writePosts } from "../lib/fs-tools.js";
-import {
-  writePostCover,
-  readPostCover,
-  getPostsSource,
-} from "../lib/fs-tools.js";
+import { writePostCover, readPostCover, getPostsSource } from "../lib/fs-tools.js";
 import multer from "multer";
 import { v2 as cloudinary } from "cloudinary";
 import { CloudinaryStorage } from "multer-storage-cloudinary";
@@ -121,11 +117,7 @@ BlogPostsRouter.get("/:id", async (req, res, next) => {
 /****************UPDATE POST******************/
 BlogPostsRouter.put("/:id", async (req, res, next) => {
   try {
-    const singlePost = await blogPostsModel.findByIdAndUpdate(
-      req.params.id,
-      req.body,
-      { runValidators: true, new: true }
-    );
+    const singlePost = await blogPostsModel.findByIdAndUpdate(req.params.id, req.body, { runValidators: true, new: true });
 
     res.send(singlePost);
   } catch (error) {
@@ -241,29 +233,25 @@ BlogPostsRouter.get("/:id/comments", async (req, res, next) => {
 });
 
 /****************UPLOAD COVER******************/
-BlogPostsRouter.post(
-  "/:id/uploadCove",
-  multer().single("cover"),
-  async (req, res, next) => {
-    try {
-      console.log(req.file);
-      await writePostCover(req.file.originalname, req.file.buffer);
-      const link = `http://localhost:3001/img/cover/${req.file.originalname}`;
+BlogPostsRouter.post("/:id/uploadCove", multer().single("cover"), async (req, res, next) => {
+  try {
+    console.log(req.file);
+    await writePostCover(req.file.originalname, req.file.buffer);
+    const link = `http://localhost:3001/img/cover/${req.file.originalname}`;
 
-      const Posts = await getPosts();
-      let updatedPosts = Posts.map((post) => {
-        if (post._id === req.params.id) {
-          post.cover = link;
-        }
-        return post;
-      });
-      await writePosts(updatedPosts);
-      res.status(201).send(link);
-    } catch (error) {
-      next(error);
-    }
+    const Posts = await getPosts();
+    let updatedPosts = Posts.map((post) => {
+      if (post._id === req.params.id) {
+        post.cover = link;
+      }
+      return post;
+    });
+    await writePosts(updatedPosts);
+    res.status(201).send(link);
+  } catch (error) {
+    next(error);
   }
-);
+});
 /****************UPLOAD COVER USING CLOUDINARY******************/
 const cloudinaryStorage = new CloudinaryStorage({
   cloudinary,
@@ -321,9 +309,7 @@ BlogPostsRouter.post("/:id/comments", async (req, res, next) => {
 BlogPostsRouter.put("/:id", async (req, res, next) => {
   try {
     const blogPosts = await getPosts();
-    const remainingBlogPosts = blogPosts.filter(
-      (blogPost) => blogPost._id !== req.params.id
-    );
+    const remainingBlogPosts = blogPosts.filter((blogPost) => blogPost._id !== req.params.id);
 
     const updatedBlogPost = { ...req.body, _id: req.params.id };
 
@@ -340,9 +326,7 @@ BlogPostsRouter.put("/:id", async (req, res, next) => {
 BlogPostsRouter.delete("/:id", async (req, res, next) => {
   try {
     const blogPosts = await getPosts();
-    const remainingBlogPosts = blogPosts.filter(
-      (blogPost) => blogPost._id !== req.params.id
-    );
+    const remainingBlogPosts = blogPosts.filter((blogPost) => blogPost._id !== req.params.id);
 
     writePosts(remainingBlogPosts);
     res.status(204).send();
