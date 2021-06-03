@@ -16,7 +16,7 @@ authorsRouter.post("/", async (req, res, next) => {
     const mongoRes = await newAuthor.save();
     res.status(201).send(mongoRes);
   } catch (error) {
-    console.log(error)
+    console.log(error);
     next(error);
   }
 });
@@ -41,6 +41,30 @@ authorsRouter.get("/:id", async (req, res) => {
     }
   } catch (error) {
     console.log(error);
+    next(error);
+  }
+});
+
+/****************UPDATE Author******************/
+authorsRouter.put("/:id", async (req, res, next) => {
+  try {
+    const singleAuthor = await authorsModel.findByIdAndUpdate(req.params.id, req.body, { runValidators: true, new: true });
+
+    res.send(singleAuthor);
+  } catch (error) {
+    next(error);
+  }
+});
+
+/****************DELETE Author******************/
+authorsRouter.delete("/:id", async (req, res, next) => {
+  try {
+    const singleAuthor = await authorsModel.findByIdAndDelete(req.params.id);
+
+    if (singleAuthor) {
+      res.status(204).send();
+    }
+  } catch (error) {
     next(error);
   }
 });
