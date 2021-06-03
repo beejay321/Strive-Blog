@@ -25,15 +25,7 @@ const UserSchema = new Schema(
       default: 18,
     },
     professions: [String],
-    purchaseHistory: [
-      {
-        asin: String,
-        title: String,
-        price: Number,
-        category: String,
-        date: Date,
-      },
-    ],
+    
   },
   { timestamps: true }
 )

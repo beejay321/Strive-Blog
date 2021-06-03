@@ -2,6 +2,7 @@ import express from "express";
 import cors from "cors";
 import listEndpoints from "express-list-endpoints";
 import authorsRoutes from "./BlogAuthors/index.js";
+import usersRoutes from "./Users/index.js";
 import blogPostsRoutes from "./BlogPosts/index.js";
 import { notFoundErrorHandler, badRequestErrorHandler, forbiddenErrorHandler, catchAllErrorHandler } from "./errorHandlers.js";
 import { getCurrentFolderPath } from "./lib/fs-tools.js";
@@ -33,6 +34,7 @@ server.use(cors());
 server.use(express.json());
 
 server.use("/authors", authorsRoutes);
+server.use("/users", usersRoutes);
 
 server.use("/blogPosts", blogPostsRoutes);
 // server.use("/files", filesRoutes);
