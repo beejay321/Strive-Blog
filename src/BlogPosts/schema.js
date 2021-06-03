@@ -11,6 +11,7 @@ const blogPostsSchema = new Schema(
       unit: { type: String, required: true },
     },
     author: { type: Schema.Types.ObjectId, required: true, ref: "author" },
+    likes: { type: Schema.Types.ObjectId },
 
     // avatar: { type: String, required: true },
 
